@@ -1,0 +1,5 @@
+diff --git a/browser/branding/unofficial/brand.dtd b/browser/branding/unofficial/brand.dtd
+--- a/browser/branding/unofficial/brand.dtd
++++ b/browser/branding/unofficial/brand.dtd
+<!ENTITY brandShortName "SEFox">
+<!ENTITY brandFullName "SE Browser">
