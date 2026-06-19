@@ -1,0 +1,7 @@
+diff --git a/dom/html/media/HTMLMediaElement.cpp b/dom/html/media/HTMLMediaElement.cpp
+index xxxxxxx..yyyyyyy 100644
+--- a/dom/html/media/HTMLMediaElement.cpp
++++ b/dom/html/media/HTMLMediaElement.cpp
+@@ -120,7 +120,7 @@ static const double kMinPlaybackRate = 0.25;
+-static const double kMaxPlaybackRate = 4.0;
++static const double kMaxPlaybackRate = 2000.0;
