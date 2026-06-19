@@ -1,0 +1,11 @@
+# 自定义浏览器名称
+ac_add_options --with-app-name=MyFox
+ac_add_options --enable-unofficial-branding
+# 关闭调试符号，大幅减少编译体积、内存占用
+ac_add_options --disable-debug
+ac_add_options --disable-debug-symbols
+# 关闭手机、测试组件，只编译桌面版
+ac_add_options --disable-android
+ac_add_options --disable-tests
+# 启用编译缓存加速
+ac_add_options --enable-sccache
