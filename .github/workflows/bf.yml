@@ -1,0 +1,60 @@
+name: Build Custom Firefox (2000x playback + rename)
+on:
+  push:
+    branches: [ main ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. 拉取你本地仅存的补丁、配置文件（几百KB）
+      - name: Pull custom patch & mozconfig
+        uses: actions/checkout@v4
+
+      # 释放磁盘空间，删除虚拟机无用文件
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost
+          docker system prune -af
+
+      # 2. 云端浅克隆 Mozilla gecko-dev 源码（仅最新提交，不下载完整历史）
+      - name: Shallow clone gecko-dev
+        run: |
+          git clone --depth=1 https://github.com/mozilla/gecko-dev.git ./gecko
+          cd gecko
+
+      # 3. 复制你的补丁、编译配置进源码目录
+      - name: Copy custom patches & mozconfig
+        run: |
+          cp ./patches/*.patch ./gecko/
+          cp ./mozconfig ./gecko/mozconfig
+          cd gecko
+
+      # 4. 应用自定义补丁（倍速上限2000 + 改名）
+      - name: Apply patches
+        run: |
+          cd gecko
+          git apply *.patch
+
+      # 5. 自动安装全部编译依赖（Rust/C++/GTK）
+      - name: Bootstrap build tools
+        run: |
+          cd gecko
+          ./mach bootstrap --no-interactive
+
+      # 6. 启用编译缓存，降低内存占用
+      - name: Build Firefox (release only, no debug symbol)
+        run: |
+          cd gecko
+          ./mach build
+
+      # 7. 打包成品压缩包
+      - name: Package binary
+        run: |
+          cd gecko
+          ./mach package
+
+      # 8. 上传编译好的浏览器到 Release
+      - name: Upload release artifact
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ./gecko/obj-x86_64-pc-linux-gnu/dist/*.tar.bz2
